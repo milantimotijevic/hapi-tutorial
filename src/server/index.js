@@ -1,4 +1,6 @@
 const Hapi = require('hapi');
+const Boom = require('@hapi/boom');
+
 const server = new Hapi.Server({
     port: '3000',
     host: 'localhost'
@@ -29,7 +31,8 @@ module.exports = {
                     const user = fakeRepo.findUserBySessionId(session_id);
 
                     if (!user) {
-                        throw new Error('OMG LOL!');
+                        throw Boom.forbidden('You must log in');
+                        //throw new Error('You are NOT PREPARED!');
                         //return h.response({errMessage: 'You must log in'}).code(403).takeover();
                     }
 
@@ -50,14 +53,13 @@ module.exports = {
         // });
         // todo set a preResponse handler and make use of Boom to handle http error responses
         server.ext('onPreResponse', (request, h, error) => {
-            console.log('logging from onPreResponse');
 
-            if (request.response.isBoom) {
-                request.response.output.statusCode = 404;
-                request.response.output.payload.statusCode = 404;
-                request.response.output.payload.error = 'Something rly bad!';
-                request.response.output.payload.message = 'AAAA dang!!!!';
-            }
+            // if (request.response.isBoom) {
+            //     request.response.output.statusCode = 404;
+            //     request.response.output.payload.statusCode = 404;
+            //     request.response.output.payload.error = 'Something rly bad!';
+            //     request.response.output.payload.message = 'AAAA dang!!!!';
+            // }
             return h.continue;
         });
 
