@@ -52,7 +52,6 @@ module.exports = {
         server.ext('onPreResponse', (request, h, error) => {
             console.log('logging from onPreResponse');
 
-            const { response } = request;
             if (request.response.isBoom) {
                 request.response.output.statusCode = 404;
                 request.response.output.payload.statusCode = 404;
