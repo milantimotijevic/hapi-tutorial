@@ -29,7 +29,8 @@ module.exports = {
                     const user = fakeRepo.findUserBySessionId(session_id);
 
                     if (!user) {
-                        return h.response({errMessage: 'You must log in'}).code(403).takeover();
+                        throw new Error('OMG LOL!');
+                        //return h.response({errMessage: 'You must log in'}).code(403).takeover();
                     }
 
                     return h.authenticated({credentials: {
@@ -47,6 +48,19 @@ module.exports = {
         //     console.log('onPostAuth triggered');
         //     return h.continue
         // });
+        // todo set a preResponse handler and make use of Boom to handle http error responses
+        server.ext('onPreResponse', (request, h, error) => {
+            console.log('logging from onPreResponse');
+
+            const { response } = request;
+            if (request.response.isBoom) {
+                request.response.output.statusCode = 404;
+                request.response.output.payload.statusCode = 404;
+                request.response.output.payload.error = 'Something rly bad!';
+                request.response.output.payload.message = 'AAAA dang!!!!';
+            }
+            return h.continue;
+        });
 
         const routes = require('../routes');
         routes.forEach(route => {
